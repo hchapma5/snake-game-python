@@ -1,11 +1,16 @@
 import random
-import pygame
-from pygame.locals import *
-
+from settings import *
 class Fruit:
-    def __init__(self, pos):
-        self.pos = pos
-        self.colour = Color(255, 0, 0)
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.colour = (255, 0, 0)
         
-    def draw(self, screen, cell_size):
-        pygame.draw.rect(screen, self.colour, (self.pos[0] * cell_size, self.pos[1] * cell_size, cell_size, cell_size))    
+def generate_fruit(game_map):
+    x = random.randint(0, MAP_WIDTH - 1)
+    y = random.randint(0, MAP_HEIGHT - 1)
+    while game_map.map[y][x] != 0:
+        x = random.randint(0, MAP_WIDTH - 1)
+        y = random.randint(0, MAP_HEIGHT - 1)
+    return Fruit(x, y)
+
