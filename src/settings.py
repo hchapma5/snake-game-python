@@ -17,10 +17,10 @@ FONT = "src/assets/fonts/AGaramond-Regular.otf"
 
 # Game over settings
 GAME_OVER_SIZE = 72
-GAME_OVER_POSITION = (200, 100)
+GAME_OVER_POSITION = (WINDOW_WIDTH // 2 - 200, WINDOW_HEIGHT // 2 - 50)
 GAME_OVER_COLOUR = (255, 255, 255)
 
 # Score settings
-SCORE_SIZE = 36
-SCORE_POSITION = (200, 500)
+SCORE_SIZE = 24
+SCORE_POSITION = (20, 20)
 SCORE_COLOUR = (0, 0, 255)

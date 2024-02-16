@@ -1,4 +1,5 @@
-import random
+import pygame, random
+from pygame.locals import *
 from settings import *
 class Fruit:
     def __init__(self, x, y):
@@ -6,11 +7,14 @@ class Fruit:
         self.y = y
         self.colour = (255, 0, 0)
         
-def generate_fruit(game_map):
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.colour, (self.x * CELL_SIZE, self.y * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+        
+def generate_fruit(snake):
+    # Generate a random position for the fruit that isn't occupied by the snake
     x = random.randint(0, MAP_WIDTH - 1)
     y = random.randint(0, MAP_HEIGHT - 1)
-    while game_map.map[y][x] != 0:
+    while (x, y) in list(snake.body):
         x = random.randint(0, MAP_WIDTH - 1)
         y = random.randint(0, MAP_HEIGHT - 1)
     return Fruit(x, y)
-
