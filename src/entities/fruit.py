@@ -6,10 +6,13 @@ class Fruit:
         self.x = x
         self.y = y
         self.colour = (255, 0, 0)
+        self.image = pygame.image.load("src/assets/images/apple.png").convert_alpha()
+        self.sprite_offset = 10
         
     def draw(self, screen):
-        pygame.draw.rect(screen, self.colour, (self.x * CELL_SIZE, self.y * CELL_SIZE, CELL_SIZE, CELL_SIZE))
-        
+        # pygame.draw.rect(screen, self.colour, (self.x * CELL_SIZE, self.y * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+        screen.blit(self.image, (self.x * CELL_SIZE - self.sprite_offset, self.y * CELL_SIZE - self.sprite_offset))
+    
 def generate_fruit(snake):
     # Generate a random position for the fruit that isn't occupied by the snake
     x = random.randint(0, MAP_WIDTH - 1)
