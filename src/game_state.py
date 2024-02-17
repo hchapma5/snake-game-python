@@ -6,7 +6,7 @@ from pygame import font
 
 class GameState:
     def __init__(self):
-        self.speed = 10
+        self.speed = 8
         self.score = 0
         self.fruit_placed = False
     
@@ -14,7 +14,7 @@ class GameState:
         display("SCORE: " + str(self.score), screen, SCORE_POSITION, SCORE_SIZE, SCORE_COLOUR)
         
     def update(self):
-        self.speed += 1
+        self.speed += 0.5
         self.score += 1
         
     def game_over(self, screen):

@@ -12,13 +12,21 @@ pygame.display.set_caption("Snake")
 clock = pygame.time.Clock()
 state = GameState()
 snake = Snake()
+
+
+def draw_background():
+    for row in range(MAP_WIDTH):
+        for column in range(MAP_HEIGHT):
+            pygame.draw.rect(screen, (0,0,0), (row * CELL_SIZE, column * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+            pygame.draw.rect(screen, (90,90,90), (row * CELL_SIZE + 0.2, column * CELL_SIZE + 0.2, CELL_SIZE - 1, CELL_SIZE - 1))
     
 # -------- Main Program Loop ----------
 game_loop = True
 while game_loop:
     
     # Draw background
-    screen.fill((0, 0, 0))
+    # screen.fill((0, 0, 0))
+    draw_background()
     
     # Draw the score
     state.draw_score(screen)

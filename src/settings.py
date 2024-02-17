@@ -3,7 +3,7 @@ WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 
 # Cell settings
-CELL_SIZE = 20
+CELL_SIZE = 40
 
 # Map settings
 MAP_WIDTH = WINDOW_WIDTH // CELL_SIZE

@@ -18,6 +18,9 @@ class Snake:
         self.img_head_left = pygame.image.load("src/assets/images/head_left.png").convert_alpha()
         self.img_head_right = pygame.image.load("src/assets/images/head_right.png").convert_alpha()
         self.img_head = self.img_head_right
+        self.img_body_h = pygame.image.load("src/assets/images/body_horizontal.png").convert_alpha()
+        self.img_body_v = pygame.image.load("src/assets/images/body_vertical.png").convert_alpha()
+        self.images = [self.img_head, self.img_body_h]
         
     def update_head(self):
         if self.dir == self.dir_right:
@@ -28,6 +31,7 @@ class Snake:
             self.img_head = self.img_head_down
         elif self.dir == self.dir_up:
             self.img_head = self.img_head_up
+            
         
     def move(self):
         key = pygame.key.get_pressed()
@@ -42,16 +46,27 @@ class Snake:
             self.dir = self.dir_right
             
         new_head = (self.head[0] + self.dir[0], self.head[1] + self.dir[1])
+        self.update_head()
+        self.images[0] = self.img_head
+        image_body = self.img_body_h if self.dir in [self.dir_left, self.dir_right] else self.img_body_v
+        self.images.append(image_body)
         self.body.appendleft(new_head)
-        self.head = new_head
-            
+        self.head = new_head        
         
     def draw(self, screen):
-        self.update_head()
-        for segment in self.body:
-            if segment == self.head:
-                screen.blit(self.img_head, (segment[0] * CELL_SIZE - 10, segment[1] * CELL_SIZE - 10))
+        for i, segment in enumerate(self.body):
+            if i == 0:  # Head segment
+                img = self.img_head
             else:
-                pygame.draw.rect(screen, self.colour, (segment[0] * CELL_SIZE, segment[1] * CELL_SIZE, CELL_SIZE, CELL_SIZE))
+                # Determine the direction of the segment relative to the previous segment
+                prev_segment = self.body[i-1]
+                if segment[0] == prev_segment[0]:  # If x-coordinates are equal, segment is vertical
+                    img = self.img_body_v
+                else:  # Otherwise, it's horizontal
+                    img = self.img_body_h
+
+            # Scale and draw the image
+            img_scaled = pygame.transform.scale(img, (CELL_SIZE, CELL_SIZE))
+            screen.blit(img_scaled, (segment[0] * CELL_SIZE, segment[1] * CELL_SIZE))
     
         
