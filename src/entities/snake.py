@@ -17,9 +17,17 @@ class Snake:
         self.img_head_down = pygame.image.load("src/assets/images/head_down.png").convert_alpha()
         self.img_head_left = pygame.image.load("src/assets/images/head_left.png").convert_alpha()
         self.img_head_right = pygame.image.load("src/assets/images/head_right.png").convert_alpha()
-        self.img_head = self.img_head_right
+        self.img_tail_up = pygame.image.load("src/assets/images/tail_up.png").convert_alpha()
+        self.img_tail_down = pygame.image.load("src/assets/images/tail_down.png").convert_alpha()
+        self.img_tail_left = pygame.image.load("src/assets/images/tail_left.png").convert_alpha()
+        self.img_tail_right = pygame.image.load("src/assets/images/tail_right.png").convert_alpha()
+        self.img_body_tl = pygame.image.load("src/assets/images/body_topleft.png").convert_alpha()
+        self.img_body_tr = pygame.image.load("src/assets/images/body_topright.png").convert_alpha()
+        self.img_body_bl = pygame.image.load("src/assets/images/body_bottomleft.png").convert_alpha()
+        self.img_body_br = pygame.image.load("src/assets/images/body_bottomright.png").convert_alpha()
         self.img_body_h = pygame.image.load("src/assets/images/body_horizontal.png").convert_alpha()
         self.img_body_v = pygame.image.load("src/assets/images/body_vertical.png").convert_alpha()
+        self.img_head = self.img_head_right # Default head image
         self.images = [self.img_head, self.img_body_h]
         
     def update_head(self):
@@ -34,39 +42,69 @@ class Snake:
             
         
     def move(self):
+        # Reset direction change flag at the start of each move
+        self.change_dir = False
+
         key = pygame.key.get_pressed()
+        new_dir = None
 
         if key[K_UP] and self.dir != self.dir_down:
-            self.dir = self.dir_up
+            new_dir = self.dir_up
         elif key[K_DOWN] and self.dir != self.dir_up:
-            self.dir = self.dir_down
+            new_dir = self.dir_down
         elif key[K_LEFT] and self.dir != self.dir_right:
-            self.dir = self.dir_left
+            new_dir = self.dir_left
         elif key[K_RIGHT] and self.dir != self.dir_left:
-            self.dir = self.dir_right
-            
+            new_dir = self.dir_right
+
+        if new_dir and new_dir != self.dir:
+            self.dir = new_dir
+
         new_head = (self.head[0] + self.dir[0], self.head[1] + self.dir[1])
         self.update_head()
-        self.images[0] = self.img_head
-        image_body = self.img_body_h if self.dir in [self.dir_left, self.dir_right] else self.img_body_v
-        self.images.append(image_body)
         self.body.appendleft(new_head)
-        self.head = new_head        
+        self.head = new_head
+     
         
     def draw(self, screen):
         for i, segment in enumerate(self.body):
+            segment_pos = (segment[0] * CELL_SIZE, segment[1] * CELL_SIZE)
             if i == 0:  # Head segment
-                img = self.img_head
+                screen.blit(self.img_head, segment_pos)
             else:
-                # Determine the direction of the segment relative to the previous segment
-                prev_segment = self.body[i-1]
-                if segment[0] == prev_segment[0]:  # If x-coordinates are equal, segment is vertical
-                    img = self.img_body_v
-                else:  # Otherwise, it's horizontal
-                    img = self.img_body_h
+                prev_segment = self.body[i - 1]
+                if i < len(self.body) - 1:  # Middle segments
+                    next_segment = self.body[i + 1]
+                    # Determine direction to draw the correct body part
+                    if prev_segment[0] == next_segment[0]:  # Vertical
+                        img = self.img_body_v
+                    elif prev_segment[1] == next_segment[1]:  # Horizontal
+                        img = self.img_body_h
+                    else:  # Corner
+                        # Determine the correct corner sprite
+                        if (prev_segment[0] < segment[0] and next_segment[1] < segment[1]) or (next_segment[0] < segment[0] and prev_segment[1] < segment[1]):
+                            img = self.img_body_tl
+                        elif (prev_segment[0] > segment[0] and next_segment[1] < segment[1]) or (next_segment[0] > segment[0] and prev_segment[1] < segment[1]):
+                            img = self.img_body_tr
+                        elif (prev_segment[0] < segment[0] and next_segment[1] > segment[1]) or (next_segment[0] < segment[0] and prev_segment[1] > segment[1]):
+                            img = self.img_body_bl
+                        elif (prev_segment[0] > segment[0] and next_segment[1] > segment[1]) or (next_segment[0] > segment[0] and prev_segment[1] > segment[1]):
+                            img = self.img_body_br
+                        else:
+                            img = self.img_body_h  # Fallback, should not reach here
+                    screen.blit(img, segment_pos)
+                else:  # Tail segment, now uses tail images
+                    # Determine the direction for the tail
+                    if prev_segment[0] == segment[0]:  # Vertical movement
+                        if prev_segment[1] > segment[1]:  # Moving up
+                            img_tail = self.img_tail_up
+                        else:  # Moving down
+                            img_tail = self.img_tail_down
+                    else:  # Horizontal movement
+                        if prev_segment[0] > segment[0]:  # Moving left
+                            img_tail = self.img_tail_left
+                        else:  # Moving right
+                            img_tail = self.img_tail_right
+                    
+                    screen.blit(img_tail, segment_pos)
 
-            # Scale and draw the image
-            img_scaled = pygame.transform.scale(img, (CELL_SIZE, CELL_SIZE))
-            screen.blit(img_scaled, (segment[0] * CELL_SIZE, segment[1] * CELL_SIZE))
-    
-        

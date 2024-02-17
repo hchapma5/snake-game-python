@@ -2,11 +2,10 @@ import sys
 import pygame
 from pygame.locals import *
 from settings import *
-from pygame import font
 
 class GameState:
     def __init__(self):
-        self.speed = 8
+        self.speed = 10
         self.score = 0
         self.fruit_placed = False
     
@@ -14,13 +13,13 @@ class GameState:
         display("SCORE: " + str(self.score), screen, SCORE_POSITION, SCORE_SIZE, SCORE_COLOUR)
         
     def update(self):
-        self.speed += 0.5
+        self.speed += 0.25
         self.score += 1
         
     def game_over(self, screen):
         paused = True
         while paused:
-            display("GAME OVER", screen, GAME_OVER_POSITION, GAME_OVER_SIZE, GAME_OVER_COLOUR)
+            display("YOU DIED", screen, GAME_OVER_POSITION, GAME_OVER_SIZE, GAME_OVER_COLOUR)
             for event in pygame.event.get():
                 if event.type == QUIT:
                     pygame.quit()
